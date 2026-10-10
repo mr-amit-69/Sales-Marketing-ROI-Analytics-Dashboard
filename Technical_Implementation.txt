@@ -1,0 +1,10 @@
+let
+    Source = Csv.Document(File.Contents("C:\Users\Mr_Venom\Downloads\marketing_campaign_dataset.csv"),[Delimiter=",", Columns=16, Encoding=1252, QuoteStyle=QuoteStyle.None]),
+    #"Promoted Headers" = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),
+    #"Changed Type" = Table.TransformColumnTypes(#"Promoted Headers",{{"Campaign_ID", Int64.Type}, {"Company", type text}, {"Campaign_Type", type text}, {"Target_Audience", type text}, {"Duration", type text}, {"Channel_Used", type text}, {"Conversion_Rate", type number}, {"Acquisition_Cost", type text}, {"ROI", type number}, {"Location", type text}, {"Language", type text}, {"Clicks", Int64.Type}, {"Impressions", Int64.Type}, {"Engagement_Score", Int64.Type}, {"Customer_Segment", type text}, {"Date", type date}}),
+    #"Replaced Value" = Table.ReplaceValue(#"Changed Type","$","",Replacer.ReplaceText,{"Acquisition_Cost"}),
+    #"Replaced Value1" = Table.ReplaceValue(#"Replaced Value",",","",Replacer.ReplaceText,{"Acquisition_Cost"}),
+    #"Changed Type1" = Table.TransformColumnTypes(#"Replaced Value1",{{"Acquisition_Cost", type number}}),
+    #"Removed Duplicates" = Table.Distinct(#"Changed Type1", {"Campaign_ID"})
+in
+    #"Removed Duplicates"
